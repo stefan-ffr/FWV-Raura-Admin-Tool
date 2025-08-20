@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-fwv_raura}
+      MYSQL_USER: ${MYSQL_USER:-fwvuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-fwvpassword}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - fwv-network
+
+  backend:
+    build: ./backend
+    restart: always
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: ${MYSQL_USER:-fwvuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-fwvpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-fwv_raura}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key}
+      MAIL_SERVER: ${MAIL_SERVER:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - mysql
+    networks:
+      - fwv-network
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    networks:
+      - fwv-network
+
+volumes:
+  mysql_data:
+
+networks:
+  fwv-network:
+    driver: bridge
