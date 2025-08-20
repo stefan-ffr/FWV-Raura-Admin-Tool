@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feuerwehrverein Raura - Benachrichtigungssystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .modal { display: none; }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-red-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-fire-extinguisher text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">Feuerwehrverein Raura</h1>
+                        <p class="text-sm opacity-90">Benachrichtigungssystem</p>
+                    </div>
+                </div>
+                <div class="text-sm">
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex space-x-1 overflow-x-auto">
+                <button onclick="showTab('dashboard')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-dashboard mr-2"></i>Dashboard
+                </button>
+                <button onclick="showTab('registration')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-user-plus mr-2"></i>Registrierung
+                </button>
+                <button onclick="showTab('contacts')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-address-book mr-2"></i>Kontakte
+                </button>
+                <button onclick="showTab('info')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-info-circle mr-2"></i>Infoschreiben
+                </button>
+                <button onclick="showTab('invitation')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-envelope mr-2"></i>Einladungen
+                </button>
+                <button onclick="showTab('invoice')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-file-invoice mr-2"></i>Rechnungen
+                </button>
+                <button onclick="showTab('credit')" class="tab-btn px-6 py-3 text-gray-700 hover:bg-gray-100 border-b-2 border-transparent hover:border-red-500 transition-colors whitespace-nowrap">
+                    <i class="fas fa-receipt mr-2"></i>Gutschriften
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Kontakte</p>
+                            <p class="text-3xl font-bold text-gray-800" id="contactCount">0</p>
+                        </div>
+                        <i class="fas fa-users text-3xl text-blue-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Neue Registrierungen</p>
+                            <p class="text-3xl font-bold text-gray-800" id="registrationCount">0</p>
+                        </div>
+                        <i class="fas fa-user-plus text-3xl text-green-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Versandt heute</p>
+                            <p class="text-3xl font-bold text-gray-800" id="sentToday">0</p>
+                        </div>
+                        <i class="fas fa-paper-plane text-3xl text-orange-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Offene Rechnungen</p>
+                            <p class="text-3xl font-bold text-gray-800">0</p>
+                        </div>
+                        <i class="fas fa-clock text-3xl text-purple-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4">Letzte Aktivitäten</h3>
+                <div id="activityLog" class="space-y-3 text-sm">
+                    <p class="text-gray-500">Noch keine Aktivitäten vorhanden.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Tab -->
+        <div id="registration" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6">Neue Registrierung</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Registration Form -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Registrierungsformular</h3>
+                    <form id="registrationForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Vorname*</label>
+                                <input type="text" id="regFirstName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nachname*</label>
+                                <input type="text" id="regLastName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">E-Mail*</label>
+                                <input type="email" id="regEmail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon 1* (z.B. +41791234567)</label>
+                                <input type="tel" id="regPhone1" pattern="^\+[0-9]{1,4}[0-9]{7,14}$" placeholder="+41791234567" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                                <p class="text-xs text-gray-500 mt-1">Mit internationaler Vorwahl</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon 2 (optional)</label>
+                                <input type="tel" id="regPhone2" pattern="^\+[0-9]{1,4}[0-9]{7,14}$" placeholder="+41791234567" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                <p class="text-xs text-gray-500 mt-1">Mit internationaler Vorwahl</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Geburtsdatum</label>
+                                <input type="date" id="regBirthdate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Strasse*</label>
+                                <input type="text" id="regStreet" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">PLZ*</label>
+                                <input type="text" id="regZip" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ort*</label>
+                                <input type="text" id="regCity" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Mitgliedschaftstyp*</label>
+                                <select id="regMemberType" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                                    <option value="">Bitte wählen...</option>
+                                    <option value="active">Aktivmitglied</option>
+                                    <option value="passive">Passivmitglied</option>
+                                    <option value="honorary">Ehrenmitglied</option>
+                                    <option value="youth">Jugendmitglied</option>
+                                    <option value="sponsor">Gönner</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Beitritt zum</label>
+                                <input type="date" id="regJoinDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bemerkungen</label>
+                                <textarea id="regNotes" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="regNewsletter" class="mr-2">
+                                    <span>Newsletter abonnieren</span>
+                                </label>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="regDataProtection" required class="mr-2">
+                                    <span>Ich akzeptiere die Datenschutzbestimmungen*</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-user-plus mr-2"></i>Registrierung abschliessen
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pending Registrations -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Ausstehende Registrierungen</h3>
+                    <div id="pendingRegistrations" class="space-y-3">
+                        <p class="text-gray-500 text-sm">Keine ausstehenden Registrierungen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacts Tab -->
+        <div id="contacts" class="tab-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Kontaktverwaltung</h2>
+                <button onclick="openContactModal()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Neuer Kontakt
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b bg-gray-50">
+                    <input type="text" id="contactSearch" placeholder="Kontakte suchen..." 
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-Mail</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefon 1</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefon 2</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Versandart</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Typ</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsTable" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Letters Tab -->
+        <div id="info" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6">Infoschreiben</h2>
+            <div class="bg-white rounded-lg shadow p-6">
+                <form id="infoForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Betreff</label>
+                        <input type="text" id="infoSubject" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nachricht</label>
+                        <textarea id="infoMessage" rows="8" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Anhang (optional)</label>
+                        <input type="file" id="infoAttachment" class="w-full px-4 py-2 border rounded-lg">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Empfänger</label>
+                        <select id="infoRecipients" multiple class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" size="5">
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">Halten Sie Strg/Cmd gedrückt für Mehrfachauswahl</p>
+                    </div>
+                    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors">
+                        <i class="fas fa-paper-plane mr-2"></i>Infoschreiben versenden
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Invitations Tab -->
+        <div id="invitation" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6">Einladungen</h2>
+            <div class="bg-white rounded-lg shadow p-6">
+                <form id="invitationForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Veranstaltung</label>
+                        <input type="text" id="eventName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Datum</label>
+                            <input type="date" id="eventDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Uhrzeit</label>
+                            <input type="time" id="eventTime" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ort</label>
+                        <input type="text" id="eventLocation" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Beschreibung</label>
+                        <textarea id="eventDescription" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Antwort bis</label>
+                        <input type="date" id="rsvpDeadline" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Empfänger</label>
+                        <select id="inviteRecipients" multiple class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" size="5">
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">Halten Sie Strg/Cmd gedrückt für Mehrfachauswahl</p>
+                    </div>
+                    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors">
+                        <i class="fas fa-envelope mr-2"></i>Einladungen versenden
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Invoices Tab -->
+        <div id="invoice" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6">Rechnungen (QR-Rechnung)</h2>
+            <div class="bg-white rounded-lg shadow p-6">
+                <form id="invoiceForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Rechnungsnummer</label>
+                            <input type="text" id="invoiceNumber" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Rechnungsdatum</label>
+                            <input type="date" id="invoiceDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Empfänger</label>
+                        <select id="invoiceRecipient" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            <option value="">Bitte wählen...</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Positionen</label>
+                        <div id="invoiceItems" class="space-y-2">
+                            <div class="flex gap-2">
+                                <input type="text" placeholder="Beschreibung" class="flex-1 px-4 py-2 border rounded-lg">
+                                <input type="number" placeholder="Menge" class="w-24 px-4 py-2 border rounded-lg">
+                                <input type="number" placeholder="Preis" step="0.05" class="w-32 px-4 py-2 border rounded-lg">
+                                <button type="button" onclick="addInvoiceItem()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Zahlungsziel (Tage)</label>
+                        <input type="number" id="paymentTerms" value="30" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">QR-IBAN</label>
+                        <input type="text" id="qrIban" value="CH5604835012345678009" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Referenz</label>
+                        <input type="text" id="qrReference" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors">
+                        <i class="fas fa-file-invoice mr-2"></i>Rechnung erstellen & versenden
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Credits Tab -->
+        <div id="credit" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6">Gutschriften</h2>
+            <div class="bg-white rounded-lg shadow p-6">
+                <form id="creditForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gutschriftsnummer</label>
+                            <input type="text" id="creditNumber" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gutschriftsdatum</label>
+                            <input type="date" id="creditDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Empfänger</label>
+                        <select id="creditRecipient" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                            <option value="">Bitte wählen...</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Grund der Gutschrift</label>
+                        <input type="text" id="creditReason" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Positionen</label>
+                        <div id="creditItems" class="space-y-2">
+                            <div class="flex gap-2">
+                                <input type="text" placeholder="Beschreibung" class="flex-1 px-4 py-2 border rounded-lg">
+                                <input type="number" placeholder="Menge" class="w-24 px-4 py-2 border rounded-lg">
+                                <input type="number" placeholder="Betrag" step="0.05" class="w-32 px-4 py-2 border rounded-lg">
+                                <button type="button" onclick="addCreditItem()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors">
+                        <i class="fas fa-receipt mr-2"></i>Gutschrift erstellen & versenden
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Kontakt bearbeiten</h3>
+                <button onclick="closeContactModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="contactForm">
+                <input type="hidden" id="contactId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Vorname</label>
+                        <input type="text" id="firstName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nachname</label>
+                        <input type="text" id="lastName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">E-Mail</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon 1 (z.B. +41791234567)</label>
+                        <input type="tel" id="phone" pattern="^\+[0-9]{1,4}[0-9]{7,14}$" placeholder="+41791234567" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <p class="text-xs text-gray-500 mt-1">Mit internationaler Vorwahl</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon 2 (optional)</label>
+                        <input type="tel" id="phone2" pattern="^\+[0-9]{1,4}[0-9]{7,14}$" placeholder="+41791234567" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <p class="text-xs text-gray-500 mt-1">Mit internationaler Vorwahl</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Strasse</label>
+                        <input type="text" id="street" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">PLZ</label>
+                        <input type="text" id="zip" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ort</label>
+                        <input type="text" id="city" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Typ</label>
+                        <select id="contactType" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="member">Mitglied</option>
+                            <option value="honorary">Ehrenmitglied</option>
+                            <option value="sponsor">Sponsor</option>
+                            <option value="external">Extern</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Versandart</label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="deliveryEmail" class="mr-2">
+                                <span>E-Mail</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="deliveryPost" class="mr-2">
+                                <span>Brief (Pingen)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2 mt-6">
+                    <button type="button" onclick="closeContactModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Abbrechen
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        Speichern
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full transition-transform duration-300">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notificationText"></span>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+        let registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
+        let invoiceCounter = parseInt(localStorage.getItem('invoiceCounter') || '1000');
+        let creditCounter = parseInt(localStorage.getItem('creditCounter') || '2000');
+        let activities = JSON.parse(localStorage.getItem('activities') || '[]');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDate();
+            loadContacts();
+            loadPendingRegistrations();
+            updateDashboard();
+            generateInvoiceNumber();
+            generateCreditNumber();
+            
+            // Add sample contacts if empty
+            if (contacts.length === 0) {
+                addSampleContacts();
+            }
+        });
+
+        // Tab Navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-red-500', 'text-red-700');
+                btn.classList.add('border-transparent', 'text-gray-700');
+            });
+            event.target.classList.remove('border-transparent', 'text-gray-700');
+            event.target.classList.add('border-red-500', 'text-red-700');
+        }
+
+        // Phone number formatting and validation
+        function formatPhoneNumber(input) {
+            let value = input.value.replace(/\s/g, '');
+            
+            // If no + at the beginning, add Swiss prefix
+            if (value && !value.startsWith('+')) {
+                if (value.startsWith('0')) {
+                    value = '+41' + value.substring(1);
+                } else {
+                    value = '+41' + value;
+                }
+            }
+            
+            input.value = value;
+            
+            // Validate format
+            const pattern = /^\+[0-9]{1,4}[0-9]{7,14}$/;
+            if (!pattern.test(value) && value !== '') {
+                input.setCustomValidity('Bitte geben Sie eine gültige Telefonnummer mit internationaler Vorwahl ein (z.B. +41791234567)');
+            } else {
+                input.setCustomValidity('');
+            }
+        }
+
+        // Add phone formatting listeners
+        document.getElementById('phone').addEventListener('blur', function() {
+            formatPhoneNumber(this);
+        });
+        document.getElementById('phone2').addEventListener('blur', function() {
+            formatPhoneNumber(this);
+        });
+        document.getElementById('regPhone1').addEventListener('blur', function() {
+            formatPhoneNumber(this);
+        });
+        document.getElementById('regPhone2').addEventListener('blur', function() {
+            if (this.value) formatPhoneNumber(this);
+        });
+
+        // Registration Form
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const registration = {
+                id: Date.now().toString(),
+                firstName: document.getElementById('regFirstName').value,
+                lastName: document.getElementById('regLastName').value,
+                email: document.getElementById('regEmail').value,
+                phone: document.getElementById('regPhone1').value,
+                phone2: document.getElementById('regPhone2').value,
+                birthdate: document.getElementById('regBirthdate').value,
+                street: document.getElementById('regStreet').value,
+                zip: document.getElementById('regZip').value,
+                city: document.getElementById('regCity').value,
+                memberType: document.getElementById('regMemberType').value,
+                joinDate: document.getElementById('regJoinDate').value,
+                notes: document.getElementById('regNotes').value,
+                newsletter: document.getElementById('regNewsletter').checked,
+                timestamp: new Date().toISOString(),
+                status: 'pending'
+            };
+            
+            registrations.push(registration);
+            localStorage.setItem('registrations', JSON.stringify(registrations));
+            
+            logActivity(`Neue Registrierung: ${registration.firstName} ${registration.lastName}`);
+            showNotification('Registrierung erfolgreich eingereicht!');
+            this.reset();
+            loadPendingRegistrations();
+            updateDashboard();
+        });
+
+        function loadPendingRegistrations() {
+            const container = document.getElementById('pendingRegistrations');
+            const pending = registrations.filter(r => r.status === 'pending');
+            
+            if (pending.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Keine ausstehenden Registrierungen</p>';
+            } else {
+                container.innerHTML = pending.map(reg => `
+                    <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-semibold">${reg.firstName} ${reg.lastName}</h4>
+                                <p class="text-sm text-gray-600">${reg.email}</p>
+                                <p class="text-sm text-gray-600">${reg.phone}</p>
+                                <p class="text-xs text-gray-500">Eingereicht: ${new Date(reg.timestamp).toLocaleString('de-CH')}</p>
+                            </div>
+                            <div class="space-x-2">
+                                <button onclick="approveRegistration('${reg.id}')" class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600">
+                                    <i class="fas fa-check"></i> Genehmigen
+                                </button>
+                                <button onclick="rejectRegistration('${reg.id}')" class="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
+                                    <i class="fas fa-times"></i> Ablehnen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function approveRegistration(regId) {
+            const reg = registrations.find(r => r.id === regId);
+            if (reg) {
+                // Create contact from registration
+                const contact = {
+                    id: Date.now().toString(),
+                    firstName: reg.firstName,
+                    lastName: reg.lastName,
+                    email: reg.email,
+                    phone: reg.phone,
+                    phone2: reg.phone2,
+                    street: reg.street,
+                    zip: reg.zip,
+                    city: reg.city,
+                    type: reg.memberType === 'sponsor' ? 'sponsor' : 'member',
+                    deliveryEmail: reg.newsletter,
+                    deliveryPost: false
+                };
+                
+                contacts.push(contact);
+                saveContacts();
+                
+                // Update registration status
+                reg.status = 'approved';
+                localStorage.setItem('registrations', JSON.stringify(registrations));
+                
+                logActivity(`Registrierung genehmigt: ${reg.firstName} ${reg.lastName}`);
+                showNotification('Registrierung genehmigt und Kontakt erstellt!');
+                loadContacts();
+                loadPendingRegistrations();
+                updateDashboard();
+            }
+        }
+
+        function rejectRegistration(regId) {
+            if (confirm('Möchten Sie diese Registrierung wirklich ablehnen?')) {
+                const reg = registrations.find(r => r.id === regId);
+                if (reg) {
+                    reg.status = 'rejected';
+                    localStorage.setItem('registrations', JSON.stringify(registrations));
+                    
+                    logActivity(`Registrierung abgelehnt: ${reg.firstName} ${reg.lastName}`);
+                    showNotification('Registrierung abgelehnt');
+                    loadPendingRegistrations();
+                    updateDashboard();
+                }
+            }
+        }
+
+        // Contact Management
+        function openContactModal(contactId = null) {
+            const modal = document.getElementById('contactModal');
+            modal.classList.add('active');
+            
+            if (contactId) {
+                const contact = contacts.find(c => c.id === contactId);
+                if (contact) {
+                    document.getElementById('contactId').value = contact.id;
+                    document.getElementById('firstName').value = contact.firstName;
+                    document.getElementById('lastName').value = contact.lastName;
+                    document.getElementById('email').value = contact.email;
+                    document.getElementById('phone').value = contact.phone;
+                    document.getElementById('phone2').value = contact.phone2 || '';
+                    document.getElementById('street').value = contact.street;
+                    document.getElementById('zip').value = contact.zip;
+                    document.getElementById('city').value = contact.city;
+                    document.getElementById('contactType').value = contact.type;
+                    document.getElementById('deliveryEmail').checked = contact.deliveryEmail;
+                    document.getElementById('deliveryPost').checked = contact.deliveryPost;
+                }
+            } else {
+                document.getElementById('contactForm').reset();
+                document.getElementById('contactId').value = '';
+            }
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('active');
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const contactData = {
+                id: document.getElementById('contactId').value || Date.now().toString(),
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                phone2: document.getElementById('phone2').value,
+                street: document.getElementById('street').value,
+                zip: document.getElementById('zip').value,
+                city: document.getElementById('city').value,
+                type: document.getElementById('contactType').value,
+                deliveryEmail: document.getElementById('deliveryEmail').checked,
+                deliveryPost: document.getElementById('deliveryPost').checked
+            };
+            
+            const existingIndex = contacts.findIndex(c => c.id === contactData.id);
+            if (existingIndex >= 0) {
+                contacts[existingIndex] = contactData;
+                showNotification('Kontakt aktualisiert');
+            } else {
+                contacts.push(contactData);
+                showNotification('Kontakt hinzugefügt');
+            }
+            
+            saveContacts();
+            loadContacts();
+            closeContactModal();
+            updateDashboard();
+        });
+
+        function deleteContact(contactId) {
+            if (confirm('Möchten Sie diesen Kontakt wirklich löschen?')) {
+                contacts = contacts.filter(c => c.id !== contactId);
+                saveContacts();
+                loadContacts();
+                showNotification('Kontakt gelöscht');
+                updateDashboard();
+            }
+        }
+
+        function loadContacts() {
+            const tbody = document.getElementById('contactsTable');
+            tbody.innerHTML = '';
+            
+            const recipientSelects = ['infoRecipients', 'inviteRecipients', 'invoiceRecipient', 'creditRecipient'];
+            recipientSelects.forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    if (id === 'invoiceRecipient' || id === 'creditRecipient') {
+                        select.innerHTML = '<option value="">Bitte wählen...</option>';
+                    } else {
+                        select.innerHTML = '<option value="all">Alle Kontakte</option>';
+                    }
+                }
+            });
+            
+            contacts.forEach(contact => {
+                const tr = document.createElement('tr');
+                const deliveryMethods = [];
+                if (contact.deliveryEmail) deliveryMethods.push('E-Mail');
+                if (contact.deliveryPost) deliveryMethods.push('Brief');
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.firstName} ${contact.lastName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.phone}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.phone2 || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${deliveryMethods.join(', ')}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                            ${getContactTypeLabel(contact.type)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <button onclick="openContactModal('${contact.id}')" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteContact('${contact.id}')" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                
+                // Update recipient selects
+                recipientSelects.forEach(id => {
+                    const select = document.getElementById(id);
+                    if (select) {
+                        const option = document.createElement('option');
+                        option.value = contact.id;
+                        option.textContent = `${contact.firstName} ${contact.lastName}`;
+                        select.appendChild(option);
+                    }
+                });
+            });
+        }
+
+        function getContactTypeLabel(type) {
+            const labels = {
+                'member': 'Mitglied',
+                'honorary': 'Ehrenmitglied',
+                'sponsor': 'Sponsor',
+                'external': 'Extern'
+            };
+            return labels[type] || type;
+        }
+
+        function saveContacts() {
+            localStorage.setItem('contacts', JSON.stringify(contacts));
+        }
+
+        // Invoice & Credit Functions
+        function generateInvoiceNumber() {
+            document.getElementById('invoiceNumber').value = `RE-${invoiceCounter}`;
+        }
+
+        function generateCreditNumber() {
+            document.getElementById('creditNumber').value = `GS-${creditCounter}`;
+        }
+
+        function addInvoiceItem() {
+            const container = document.getElementById('invoiceItems');
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `
+                <input type="text" placeholder="Beschreibung" class="flex-1 px-4 py-2 border rounded-lg">
+                <input type="number" placeholder="Menge" class="w-24 px-4 py-2 border rounded-lg">
+                <input type="number" placeholder="Preis" step="0.05" class="w-32 px-4 py-2 border rounded-lg">
+                <button type="button" onclick="this.parentElement.remove()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addCreditItem() {
+            const container = document.getElementById('creditItems');
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `
+                <input type="text" placeholder="Beschreibung" class="flex-1 px-4 py-2 border rounded-lg">
+                <input type="number" placeholder="Menge" class="w-24 px-4 py-2 border rounded-lg">
+                <input type="number" placeholder="Betrag" step="0.05" class="w-32 px-4 py-2 border rounded-lg">
+                <button type="button" onclick="this.parentElement.remove()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Form Submissions
+        document.getElementById('infoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const recipients = Array.from(document.getElementById('infoRecipients').selectedOptions)
+                .map(option => option.text);
+            
+            logActivity(`Infoschreiben versendet an: ${recipients.join(', ')}`);
+            showNotification('Infoschreiben erfolgreich versendet!');
+            this.reset();
+        });
+
+        document.getElementById('invitationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const recipients = Array.from(document.getElementById('inviteRecipients').selectedOptions)
+                .map(option => option.text);
+            const eventName = document.getElementById('eventName').value;
+            
+            logActivity(`Einladung für "${eventName}" versendet an: ${recipients.join(', ')}`);
+            showNotification('Einladungen erfolgreich versendet!');
+            this.reset();
+        });
+
+        document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const recipient = document.getElementById('invoiceRecipient').selectedOptions[0].text;
+            const invoiceNum = document.getElementById('invoiceNumber').value;
+            
+            logActivity(`Rechnung ${invoiceNum} erstellt für: ${recipient}`);
+            showNotification('Rechnung erfolgreich erstellt und versendet!');
+            
+            invoiceCounter++;
+            localStorage.setItem('invoiceCounter', invoiceCounter.toString());
+            this.reset();
+            generateInvoiceNumber();
+        });
+
+        document.getElementById('creditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const recipient = document.getElementById('creditRecipient').selectedOptions[0].text;
+            const creditNum = document.getElementById('creditNumber').value;
+            
+            logActivity(`Gutschrift ${creditNum} erstellt für: ${recipient}`);
+            showNotification('Gutschrift erfolgreich erstellt und versendet!');
+            
+            creditCounter++;
+            localStorage.setItem('creditCounter', creditCounter.toString());
+            this.reset();
+            generateCreditNumber();
+        });
+
+        // Utilities
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notificationText').textContent = message;
+            notification.style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateY(200%)';
+            }, 3000);
+        }
+
+        function updateCurrentDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date().toLocaleDateString('de-CH', options);
+            document.getElementById('currentDate').textContent = date;
+        }
+
+        function logActivity(message) {
+            const activity = {
+                message: message,
+                timestamp: new Date().toISOString()
+            };
+            activities.unshift(activity);
+            activities = activities.slice(0, 10); // Keep only last 10 activities
+            localStorage.setItem('activities', JSON.stringify(activities));
+            updateActivityLog();
+        }
+
+        function updateActivityLog() {
+            const container = document.getElementById('activityLog');
+            if (activities.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">Noch keine Aktivitäten vorhanden.</p>';
+            } else {
+                container.innerHTML = activities.map(activity => {
+                    const date = new Date(activity.timestamp);
+                    const timeStr = date.toLocaleString('de-CH', { 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    return `
+                        <div class="flex items-start space-x-2 p-2 hover:bg-gray-50 rounded">
+                            <i class="fas fa-circle text-red-500 text-xs mt-1"></i>
+                            <div class="flex-1">
+                                <p class="text-gray-700">${activity.message}</p>
+                                <p class="text-xs text-gray-500">${timeStr}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function updateDashboard() {
+            document.getElementById('contactCount').textContent = contacts.length;
+            document.getElementById('registrationCount').textContent = registrations.filter(r => r.status === 'pending').length;
+            document.getElementById('sentToday').textContent = activities.filter(a => {
+                const today = new Date().toDateString();
+                return new Date(a.timestamp).toDateString() === today;
+            }).length;
+            updateActivityLog();
+        }
+
+        // Sample Data
+        function addSampleContacts() {
+            const sampleContacts = [
+                {
+                    id: Date.now().toString() + '1',
+                    firstName: 'Max',
+                    lastName: 'Muster',
+                    email: 'max.muster@example.ch',
+                    phone: '+41791234567',
+                    phone2: '+41781234567',
+                    street: 'Hauptstrasse 10',
+                    zip: '6020',
+                    city: 'Emmenbrücke',
+                    type: 'member',
+                    deliveryEmail: true,
+                    deliveryPost: false
+                },
+                {
+                    id: Date.now().toString() + '2',
+                    firstName: 'Anna',
+                    lastName: 'Beispiel',
+                    email: 'anna.beispiel@example.ch',
+                    phone: '+41789876543',
+                    phone2: '',
+                    street: 'Bahnhofstrasse 5',
+                    zip: '6000',
+                    city: 'Luzern',
+                    type: 'honorary',
+                    deliveryEmail: false,
+                    deliveryPost: true
+                },
+                {
+                    id: Date.now().toString() + '3',
+                    firstName: 'Peter',
+                    lastName: 'Schweizer',
+                    email: 'peter.schweizer@example.ch',
+                    phone: '+41765554433',
+                    phone2: '+41445551234',
+                    street: 'Dorfplatz 3',
+                    zip: '6030',
+                    city: 'Ebikon',
+                    type: 'sponsor',
+                    deliveryEmail: true,
+                    deliveryPost: true
+                }
+            ];
+            
+            contacts = sampleContacts;
+            saveContacts();
+            loadContacts();
+        }
+
+        // Search functionality
+        document.getElementById('contactSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#contactsTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
