@@ -5,15 +5,30 @@ on:
     branches: [ main ]
     tags:
       - 'v*'
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository_owner }}/fwv-raura
 
 jobs:
-  build-backend:
+  check-backend:
+    runs-on: ubuntu-latest
+    outputs:
+      backend_exists: ${{ steps.check.outputs.backend_exists }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: check
+      run: |
+        if [ -d "backend" ] && [ -f "backend/Dockerfile" ]; then
+          echo "backend_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "backend_exists=false" >> $GITHUB_OUTPUT
+        fi
+
+  build-and-push:
+    needs: check-backend
+    if: needs.check-backend.outputs.backend_exists == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,10 +36,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Log in to Container Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
@@ -32,57 +47,19 @@ jobs:
 
     - name: Extract metadata
       id: meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
           type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
           type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: Build and push Backend Docker image
-      uses: docker/build-push-action@v4
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
       with:
         context: ./backend
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-
-  build-nginx:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Log in to Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nginx
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=raw,value=latest,enable={{is_default_branch}}
-
-    - name: Build and push Nginx Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: ./nginx
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
