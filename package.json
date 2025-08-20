@@ -1,18 +1,20 @@
 {
-  "name": "fwv-raura",
+  "name": "fwv-raura-admin-tool",
   "version": "1.0.0",
-  "description": "Feuerwehrverein Raura Management System",
+  "description": "Feuerwehrverein Raura Admin Tool",
   "scripts": {
-    "dev": "docker-compose up",
-    "build": "docker-compose build",
-    "deploy": "npm run build && git push origin main"
+    "dev": "python3 backend/app.py",
+    "build": "echo 'Building frontend...'",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/fwv-raura.git"
+    "url": "git+https://github.com/stefan-ffr/FWV-Raura-Admin-Tool.git"
   },
-  "keywords": ["feuerwehr", "management", "switzerland"],
-  "author": "Stefan Müller",
+  "keywords": ["feuerwehr", "admin", "management"],
+  "author": "Stefan FFR",
   "license": "MIT",
-  "devDependencies": {}
+  "homepage": "https://stefan-ffr.github.io/FWV-Raura-Admin-Tool"
 }
