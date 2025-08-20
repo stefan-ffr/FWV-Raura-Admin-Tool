@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitglied werden - Feuerwehrverein Raura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-red-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-fire-extinguisher text-4xl"></i>
+                <div>
+                    <h1 class="text-3xl font-bold">Feuerwehrverein Raura</h1>
+                    <p class="text-lg opacity-90">Mitglied werden</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-3xl">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold mb-6">Registrierungsformular</h2>
+            
+            <form id="registrationForm" class="space-y-6">
+                <!-- Personal Information -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold mb-4">Persönliche Angaben</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Vorname*</label>
+                            <input type="text" id="firstName" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nachname*</label>
+                            <input type="text" id="lastName" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Geburtsdatum</label>
+                            <input type="date" id="birthdate"
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">E-Mail*</label>
+                            <input type="email" id="email" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold mb-4">Kontaktdaten</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon 1*</label>
+                            <input type="tel" id="phone1" required pattern="^\+[0-9]{1,4}[0-9]{7,14}$"
+                                   placeholder="+41791234567"
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <p class="text-xs text-gray-500 mt-1">Mit internationaler Vorwahl</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon 2 (optional)</label>
+                            <input type="tel" id="phone2" pattern="^\+[0-9]{1,4}[0-9]{7,14}$"
+                                   placeholder="+41791234567"
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold mb-4">Adresse</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Strasse und Hausnummer*</label>
+                            <input type="text" id="street" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">PLZ*</label>
+                            <input type="text" id="zip" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ort*</label>
+                            <input type="text" id="city" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Membership Type -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold mb-4">Mitgliedschaft</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mitgliedschaftstyp*</label>
+                        <select id="memberType" required
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="">Bitte wählen...</option>
+                            <option value="active">Aktivmitglied (CHF 50.-/Jahr)</option>
+                            <option value="passive">Passivmitglied (CHF 30.-/Jahr)</option>
+                            <option value="youth">Jugendmitglied (kostenlos)</option>
+                            <option value="sponsor">Gönner (freiwilliger Beitrag)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="newsletter" class="mr-3">
+                        <span>Ich möchte den Newsletter erhalten</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="dataProtection" required class="mr-3">
+                        <span>Ich akzeptiere die Datenschutzbestimmungen*</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-6">
+                    <button type="submit" 
+                            class="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold">
+                        <i class="fas fa-user-plus mr-2"></i>Registrierung abschicken
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-md">
+                <div class="text-center">
+                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-4">Registrierung erfolgreich!</h3>
+                    <p class="text-gray-600 mb-6">Vielen Dank für Ihre Registrierung. Sie erhalten in Kürze eine Bestätigungsmail.</p>
+                    <button onclick="window.location.href='/'" 
+                            class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                        Zur Startseite
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        // Phone formatting
+        function formatPhoneNumber(input) {
+            let value = input.value.replace(/\s/g, '');
+            if (value && !value.startsWith('+')) {
+                value = value.startsWith('0') ? '+41' + value.substring(1) : '+41' + value;
+            }
+            input.value = value;
+        }
+
+        document.getElementById('phone1').addEventListener('blur', function() {
+            formatPhoneNumber(this);
+        });
+
+        document.getElementById('phone2').addEventListener('blur', function() {
+            if (this.value) formatPhoneNumber(this);
+        });
+
+        // Form submission
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone1: document.getElementById('phone1').value,
+                phone2: document.getElementById('phone2').value,
+                birthdate: document.getElementById('birthdate').value,
+                street: document.getElementById('street').value,
+                zip: document.getElementById('zip').value,
+                city: document.getElementById('city').value,
+                member_type: document.getElementById('memberType').value,
+                newsletter: document.getElementById('newsletter').checked
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('successMessage').classList.remove('hidden');
+                } else {
+                    const error = await response.json();
+                    alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
+                }
+            } catch (err) {
+                alert('Verbindungsfehler. Bitte versuchen Sie es später erneut.');
+            }
+        });
+    </script>
+</body>
+</html>
