@@ -28,25 +28,13 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Create frontend structure
+    - name: Create complete frontend structure
       run: |
-        # Create directories if they don't exist
+        # Create all necessary directories
         mkdir -p frontend/admin frontend/members frontend/assets/js frontend/assets/css
         mkdir -p build
 
-    - name: Check if frontend files exist
-      id: check_files
-      run: |
-        if [ -f "frontend/index.html" ]; then
-          echo "frontend_exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "frontend_exists=false" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Create default frontend files if missing
-      if: steps.check_files.outputs.frontend_exists == 'false'
-      run: |
-        # Create a default index.html if it doesn't exist
+        # Create index.html
         cat > frontend/index.html << 'EOF'
         <!DOCTYPE html>
         <html lang="de">
@@ -58,19 +46,320 @@ jobs:
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         </head>
         <body class="bg-gray-50">
+            <div class="min-h-screen">
+                <header class="bg-red-700 text-white p-6">
+                    <div class="container mx-auto">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <i class="fas fa-fire-extinguisher text-4xl"></i>
+                            <div>
+                                <h1 class="text-3xl font-bold">FWV Raura Admin Tool</h1>
+                                <p class="opacity-90">Verwaltungssystem</p>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                
+                <main class="container mx-auto p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                        <h2 class="text-2xl font-bold mb-6">Willkommen</h2>
+                        <p class="text-gray-600 mb-8">Wählen Sie eine Option:</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                            <a href="members/registration.html" class="block bg-red-600 text-white p-6 rounded-lg hover:bg-red-700 transition">
+                                <i class="fas fa-user-plus text-3xl mb-3"></i>
+                                <h3 class="font-bold">Registrierung</h3>
+                                <p class="text-sm opacity-90 mt-2">Als Mitglied registrieren</p>
+                            </a>
+                            
+                            <a href="members/reimbursement.html" class="block bg-green-600 text-white p-6 rounded-lg hover:bg-green-700 transition">
+                                <i class="fas fa-receipt text-3xl mb-3"></i>
+                                <h3 class="font-bold">Gutschrift</h3>
+                                <p class="text-sm opacity-90 mt-2">Spesen einreichen</p>
+                            </a>
+                            
+                            <a href="admin/index.html" class="block bg-gray-600 text-white p-6 rounded-lg hover:bg-gray-700 transition">
+                                <i class="fas fa-cog text-3xl mb-3"></i>
+                                <h3 class="font-bold">Admin</h3>
+                                <p class="text-sm opacity-90 mt-2">Verwaltungsbereich</p>
+                            </a>
+                        </div>
+                    </div>
+                </main>
+                
+                <footer class="mt-12 py-6 text-center text-gray-500">
+                    <p>&copy; 2024 Feuerwehrverein Raura</p>
+                </footer>
+            </div>
+        </body>
+        </html>
+        EOF
+
+        # Create admin/index.html
+        cat > frontend/admin/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="de">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Admin Dashboard - FWV Raura</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        </head>
+        <body class="bg-gray-50">
+            <div class="min-h-screen">
+                <header class="bg-red-700 text-white p-4">
+                    <div class="container mx-auto">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-fire-extinguisher text-3xl"></i>
+                                <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                            </div>
+                            <a href="../index.html" class="hover:text-red-200">
+                                <i class="fas fa-home mr-2"></i>Startseite
+                            </a>
+                        </div>
+                    </div>
+                </header>
+                
+                <main class="container mx-auto p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h2 class="text-2xl font-bold mb-6">Verwaltungsübersicht</h2>
+                        
+                        <div class="grid md:grid-cols-4 gap-4 mb-8">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <i class="fas fa-users text-2xl text-blue-600 mb-2"></i>
+                                <h3 class="font-semibold">Mitglieder</h3>
+                                <p class="text-2xl font-bold">0</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <i class="fas fa-user-plus text-2xl text-green-600 mb-2"></i>
+                                <h3 class="font-semibold">Neue Registrierungen</h3>
+                                <p class="text-2xl font-bold">0</p>
+                            </div>
+                            <div class="bg-orange-50 p-4 rounded-lg">
+                                <i class="fas fa-receipt text-2xl text-orange-600 mb-2"></i>
+                                <h3 class="font-semibold">Offene Gutschriften</h3>
+                                <p class="text-2xl font-bold">0</p>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <i class="fas fa-file-invoice text-2xl text-purple-600 mb-2"></i>
+                                <h3 class="font-semibold">Offene Rechnungen</h3>
+                                <p class="text-2xl font-bold">0</p>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t pt-6">
+                            <h3 class="font-semibold mb-4">Schnellzugriff</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <a href="../members/registration.html" class="bg-gray-100 px-4 py-2 rounded hover:bg-gray-200">
+                                    <i class="fas fa-user-plus mr-2"></i>Neue Registrierung
+                                </a>
+                                <a href="../members/reimbursement.html" class="bg-gray-100 px-4 py-2 rounded hover:bg-gray-200">
+                                    <i class="fas fa-receipt mr-2"></i>Gutschrift einreichen
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </body>
+        </html>
+        EOF
+
+        # Create members/registration.html
+        cat > frontend/members/registration.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="de">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Mitglied werden - FWV Raura</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        </head>
+        <body class="bg-gray-50">
+            <div class="min-h-screen">
+                <header class="bg-red-700 text-white p-4">
+                    <div class="container mx-auto">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-fire-extinguisher text-3xl"></i>
+                                <h1 class="text-2xl font-bold">Mitgliederregistrierung</h1>
+                            </div>
+                            <a href="../index.html" class="hover:text-red-200">
+                                <i class="fas fa-home mr-2"></i>Startseite
+                            </a>
+                        </div>
+                    </div>
+                </header>
+                
+                <main class="container mx-auto p-6 max-w-2xl">
+                    <div class="bg-white rounded-lg shadow-lg p-8">
+                        <h2 class="text-2xl font-bold mb-6">Mitglied werden</h2>
+                        
+                        <form id="registrationForm" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Vorname*</label>
+                                    <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Nachname*</label>
+                                    <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">E-Mail*</label>
+                                <input type="email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Telefon 1*</label>
+                                    <input type="tel" required placeholder="+41791234567" pattern="^\+[0-9]{1,4}[0-9]{7,14}$" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Telefon 2 (optional)</label>
+                                    <input type="tel" placeholder="+41791234567" pattern="^\+[0-9]{1,4}[0-9]{7,14}$" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Strasse und Hausnummer*</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">PLZ*</label>
+                                    <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Ort*</label>
+                                    <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Mitgliedschaftstyp*</label>
+                                <select required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    <option value="">Bitte wählen...</option>
+                                    <option value="active">Aktivmitglied</option>
+                                    <option value="passive">Passivmitglied</option>
+                                    <option value="honorary">Ehrenmitglied</option>
+                                    <option value="youth">Jugendmitglied</option>
+                                    <option value="sponsor">Gönner</option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="newsletter" class="mr-2">
+                                <label for="newsletter">Newsletter abonnieren</label>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold transition">
+                                <i class="fas fa-user-plus mr-2"></i>Registrierung abschicken
+                            </button>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </body>
+        </html>
+        EOF
+
+        # Create members/reimbursement.html
+        cat > frontend/members/reimbursement.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="de">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Gutschrift einreichen - FWV Raura</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        </head>
+        <body class="bg-gray-50">
+            <div class="min-h-screen">
+                <header class="bg-red-700 text-white p-4">
+                    <div class="container mx-auto">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-fire-extinguisher text-3xl"></i>
+                                <h1 class="text-2xl font-bold">Gutschrift / Spesenabrechnung</h1>
+                            </div>
+                            <a href="../index.html" class="hover:text-red-200">
+                                <i class="fas fa-home mr-2"></i>Startseite
+                            </a>
+                        </div>
+                    </div>
+                </header>
+                
+                <main class="container mx-auto p-6 max-w-2xl">
+                    <div class="bg-white rounded-lg shadow-lg p-8">
+                        <h2 class="text-2xl font-bold mb-6">Gutschrift einreichen</h2>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                            <p class="text-sm text-blue-700">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Nach dem Einreichen erhalten Sie eine QR-Rechnung für die Erstattung.
+                            </p>
+                        </div>
+                        
+                        <form id="reimbursementForm" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">E-Mail-Adresse*</label>
+                                <input type="email" required placeholder="ihre.email@example.ch" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Betrag (CHF)*</label>
+                                <input type="number" required step="0.05" min="0.05" placeholder="0.00" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Beschreibung*</label>
+                                <textarea required rows="4" placeholder="Bitte beschreiben Sie die Ausgaben..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Quittung/Beleg*</label>
+                                <input type="file" accept="image/*,application/pdf" required class="w-full px-4 py-2 border rounded-lg">
+                                <p class="text-xs text-gray-500 mt-1">Max. 16MB, JPG/PNG/PDF</p>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold transition">
+                                <i class="fas fa-paper-plane mr-2"></i>Gutschrift einreichen
+                            </button>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </body>
+        </html>
+        EOF
+
+        # Create 404.html for better error handling
+        cat > frontend/404.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="de">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Seite nicht gefunden - FWV Raura</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        </head>
+        <body class="bg-gray-50">
             <div class="min-h-screen flex items-center justify-center">
                 <div class="text-center">
-                    <i class="fas fa-fire-extinguisher text-6xl text-red-600 mb-4"></i>
-                    <h1 class="text-4xl font-bold text-gray-800 mb-2">FWV Raura Admin Tool</h1>
-                    <p class="text-gray-600 mb-8">Willkommen beim Verwaltungssystem</p>
-                    <div class="space-x-4">
-                        <a href="members/registration.html" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 inline-block">
-                            <i class="fas fa-user-plus mr-2"></i>Registrierung
-                        </a>
-                        <a href="admin/" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 inline-block">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Admin Login
-                        </a>
-                    </div>
+                    <i class="fas fa-exclamation-triangle text-6xl text-orange-500 mb-4"></i>
+                    <h1 class="text-3xl font-bold mb-2">Seite nicht gefunden</h1>
+                    <p class="text-gray-600 mb-6">Die angeforderte Seite existiert nicht.</p>
+                    <a href="/FWV-Raura-Admin-Tool/" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 inline-block">
+                        <i class="fas fa-home mr-2"></i>Zur Startseite
+                    </a>
                 </div>
             </div>
         </body>
@@ -79,12 +368,16 @@ jobs:
 
     - name: Build frontend
       run: |
-        # Copy all frontend files to build directory
-        cp -r frontend/* build/ 2>/dev/null || true
+        # Copy all files to build directory
+        cp -r frontend/* build/
         
-        # Create config.js with placeholder
+        # Create config file
         mkdir -p build/assets/js
         echo "const API_URL = 'https://api.fwv-raura.ch';" > build/assets/js/config.js
+        
+        # List all created files for debugging
+        echo "Files in build directory:"
+        find build -type f -name "*.html" | head -20
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
