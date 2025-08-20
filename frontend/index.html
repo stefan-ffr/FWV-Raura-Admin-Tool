@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feuerwehrverein Raura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-red-700 to-red-800 text-white">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-fire-extinguisher text-3xl"></i>
+                    <span class="text-2xl font-bold">FWV Raura</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#about" class="hover:text-red-200 transition">Über uns</a>
+                    <a href="#services" class="hover:text-red-200 transition">Services</a>
+                    <a href="#contact" class="hover:text-red-200 transition">Kontakt</a>
+                    <a href="/admin" class="bg-white text-red-700 px-4 py-2 rounded hover:bg-red-50 transition">Admin</a>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container mx-auto px-4 py-20 text-center">
+            <h1 class="text-5xl font-bold mb-6">Willkommen beim Feuerwehrverein Raura</h1>
+            <p class="text-xl mb-8 opacity-90">Gemeinsam für Sicherheit und Gemeinschaft</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="members/registration.html" 
+                   class="bg-white text-red-700 px-8 py-3 rounded-lg font-semibold hover:bg-red-50 transition">
+                    <i class="fas fa-user-plus mr-2"></i>Mitglied werden
+                </a>
+                <a href="members/reimbursement.html" 
+                   class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-red-700 transition">
+                    <i class="fas fa-receipt mr-2"></i>Gutschrift einreichen
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="services" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Unsere Services</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <i class="fas fa-users text-4xl text-red-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">Mitgliedschaft</h3>
+                    <p class="text-gray-600 mb-4">Werden Sie Teil unserer Gemeinschaft</p>
+                    <a href="members/registration.html" class="text-red-600 hover:text-red-700">
+                        Jetzt registrieren →
+                    </a>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <i class="fas fa-receipt text-4xl text-red-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">Gutschriften</h3>
+                    <p class="text-gray-600 mb-4">Reichen Sie Ihre Spesenabrechnung ein</p>
+                    <a href="members/reimbursement.html" class="text-red-600 hover:text-red-700">
+                        Gutschrift einreichen →
+                    </a>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <i class="fas fa-calendar-check text-4xl text-red-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">Veranstaltungen</h3>
+                    <p class="text-gray-600 mb-4">Nehmen Sie an unseren Events teil</p>
+                    <a href="#contact" class="text-red-600 hover:text-red-700">
+                        Mehr erfahren →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Kontakt</h2>
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold mb-2">Adresse</h3>
+                        <p class="text-gray-600">
+                            Feuerwehrverein Raura<br>
+                            Hauptstrasse 1<br>
+                            6020 Emmenbrücke
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">Kontakt</h3>
+                        <p class="text-gray-600">
+                            E-Mail: info@fwv-raura.ch<br>
+                            Telefon: +41 41 123 45 67
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Feuerwehrverein Raura. Alle Rechte vorbehalten.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-red-400 transition">Datenschutz</a>
+                <a href="#" class="hover:text-red-400 transition">Impressum</a>
+                <a href="/admin" class="hover:text-red-400 transition">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/config.js"></script>
+</body>
+</html>
